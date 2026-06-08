@@ -29,62 +29,60 @@ shifts, and corrupted records — that traditional infrastructure monitoring com
 misses. SentinelFlow addresses this by placing an AI-powered observability layer
 directly on top of the data itself.
 
----
+## Architecture
 
-##  Architecture
+```text
 ┌─────────────────────────────────────────────────────────┐
-│                      Data Sources                        │
-│           E-Commerce (Batch) + Events (Stream)           │
+│                      Data Sources                       │
+│           E-Commerce (Batch) + Events (Stream)          │
 └───────────────────────┬─────────────────────────────────┘
-│
-┌───────────────┴───────────────┐
-▼                               ▼
+                        │
+        ┌───────────────┴───────────────┐
+        ▼                               ▼
 ┌───────────────┐               ┌───────────────┐
 │ Batch Pipeline│               │   Streaming   │
 │   (Airflow)   │               │    (Kafka)    │
 └───────┬───────┘               └───────┬───────┘
-└───────────────┬───────────────┘
-▼
+        └───────────────┬───────────────┘
+                        ▼
 ┌────────────────┐
 │   Data Lake    │
 │  (MinIO / S3)  │
 └───────┬────────┘
-│
-▼
+        │
+        ▼
 ┌───────────────────────┐
 │   Profiling Engine    │
 │  completeness · stats │
 │  uniqueness · dist    │
 └───────────┬───────────┘
-│
-▼
+            │
+            ▼
 ┌───────────────────────┐
-│  Validation Engine    │
-│  Great Expectations   │
+│   Validation Engine   │
+│   Great Expectations  │
 └───────────┬───────────┘
-│
-▼
+            │
+            ▼
 ┌───────────────────────┐
 │   AI Detection Layer  │
-│  Isolation Forest     │
-│  Autoencoder          │
-│  Z-Score · IQR        │
-│  PSI · KS-Test        │
+│   Isolation Forest    │
+│   Autoencoder         │
+│   Z-Score · IQR       │
+│   PSI · KS-Test       │
 └───────────┬───────────┘
-│
-▼
+            │
+            ▼
 ┌───────────────────────┐
 │  Metadata & Lineage   │
 │     (PostgreSQL)      │
 └───────────┬───────────┘
-│
-▼
+            │
+            ▼
 ┌───────────────────────┐
 │  Alerting & Dashboard │
 │  FastAPI + Streamlit  │
 └───────────────────────┘
-
----
 
 ##  Features
 
@@ -119,7 +117,6 @@ directly on top of the data itself.
 
 ---
 
-##  Project Structure
 sentinelflow/
 ├── config/                  # Settings and logging configuration
 ├── data/                    # Raw, processed, streaming, sample data
@@ -147,7 +144,6 @@ sentinelflow/
 ├── docker-compose.yml       # Full stack orchestration
 ├── requirements.txt         # Python dependencies
 └── .env.example             # Environment variable template
-
 ---
 
 ##  Quick Start
