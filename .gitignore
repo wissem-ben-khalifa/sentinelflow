@@ -1,0 +1,79 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+wheels/
+*.egg-info/
+.installed.cfg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# Environment Variables 
+.env
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+*.ipynb
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Logs
+logs/
+*.log
+
+# Data files (too large for git)
+data/raw/*
+data/processed/*
+data/streaming/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/streaming/.gitkeep
+!data/samples/.gitkeep
+
+# Database
+*.db
+*.sqlite3
+
+# Docker
+docker/postgres-data/
+docker/minio-data/
+
+# ML Models (too large for git)
+*.pkl
+*.h5
+*.pt
+*.pth
+models/
+
+# Great Expectations
+great_expectations/uncommitted/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# MinIO
+.minio/
