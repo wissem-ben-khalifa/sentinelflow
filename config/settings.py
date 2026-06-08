@@ -4,8 +4,13 @@ Loads all settings from environment variables with safe defaults.
 """
 
 import os
-from dotenv import load_dotenv
 from pathlib import Path
+
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    def load_dotenv(*args, **kwargs):
+        return False
 
 # Load .env file
 load_dotenv()
