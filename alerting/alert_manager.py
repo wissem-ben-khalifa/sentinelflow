@@ -238,12 +238,26 @@ def check_validation_alerts(dataset_name: str) -> list[dict]:
 
     return alerts
 
+def clear_alerts(dataset_name: str) -> None:
+    """Clear existing unresolved alerts for a dataset before inserting new ones."""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        DELETE FROM alerts
+        WHERE dataset_name = %s
+        AND resolved = FALSE
+    """, (dataset_name,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    logger.info(f"Cleared existing alerts for dataset: {dataset_name}")
 
 def run_all_checks(dataset_name: str) -> dict:
     """
     Run all alert checks for a dataset.
     Returns a summary of all alerts triggered.
     """
+    clear_alerts(dataset_name)
     logger.info(f"Running alert checks for dataset: {dataset_name}")
 
     missing_alerts = check_missing_values_alert(dataset_name)

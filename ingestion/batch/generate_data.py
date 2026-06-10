@@ -11,13 +11,13 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from config.settings import SAMPLES_DIR, RAW_DATA_DIR
 from config.logging_config import get_logger
-
+import time
 logger = get_logger(__name__)
 
 
 # Configuration
 
-RANDOM_SEED = 42
+RANDOM_SEED = int(time.time())
 random.seed(RANDOM_SEED)
 np.random.seed(RANDOM_SEED)
 
