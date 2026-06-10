@@ -34,8 +34,9 @@ directly on top of the data itself.
 ---
 
 ## Architecture
----
-Data Sources
+
+```
+                    Data Sources
           E-Commerce Batch + Streaming Events
                          |
           +--------------+--------------+
@@ -63,7 +64,7 @@ Data Sources
                          |
           Alerting and Dashboard Layer
          FastAPI | Streamlit | Grafana
----
+```
 
 ## Features
 
@@ -122,7 +123,8 @@ Data Sources
 ---
 
 ## Project Structure
----
+
+```
 sentinelflow/
 ├── config/                        # Settings and logging
 ├── data/
@@ -161,8 +163,7 @@ sentinelflow/
 ├── docker-compose.yml             # Full stack orchestration
 ├── requirements.txt               # Python dependencies
 └── .env.example                   # Environment variable template
-
----
+```
 
 ## Quick Start
 
