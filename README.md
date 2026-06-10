@@ -34,6 +34,7 @@ directly on top of the data itself.
 ---
 
 ## Architecture
+---
 Data Sources
           E-Commerce Batch + Streaming Events
                          |
@@ -106,6 +107,7 @@ Data Sources
 ---
 
 ## Services
+---
 
 | Service | URL | Credentials |
 |---|---|---|
@@ -120,6 +122,7 @@ Data Sources
 ---
 
 ## Project Structure
+---
 sentinelflow/
 ├── config/                        # Settings and logging
 ├── data/
@@ -294,5 +297,5 @@ MIT License. See LICENSE for details.
 ---
 
 <div align="center">
-Built by [Your Name] — Data Engineering Portfolio Project
+Built by wissem ben khalifa — Data Engineering Portfolio Project
 </div>
