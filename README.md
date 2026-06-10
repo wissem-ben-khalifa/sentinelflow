@@ -1,20 +1,21 @@
 <div align="center">
 
-#  SentinelFlow
+# SentinelFlow
 
 ### AI-Powered Hybrid Data Observability Platform
 
-*Production-grade pipeline monitoring combining batch ETL, real-time streaming,*
-*ML-based anomaly detection, and drift monitoring to ensure data reliability at scale.*
+Production-grade pipeline monitoring combining batch ETL, real-time streaming,
+ML-based anomaly detection, and drift monitoring to ensure data reliability at scale.
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue?style=flat-square&logo=python)
 ![Airflow](https://img.shields.io/badge/Airflow-2.8-017CEE?style=flat-square&logo=apacheairflow)
 ![Kafka](https://img.shields.io/badge/Kafka-3.6-231F20?style=flat-square&logo=apachekafka)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688?style=flat-square&logo=fastapi)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.31-FF4B4B?style=flat-square&logo=streamlit)
+![Grafana](https://img.shields.io/badge/Grafana-10.2-F46800?style=flat-square&logo=grafana)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker)
+![Tests](https://img.shields.io/badge/Tests-32%20passing-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
-![CI](https://github.com/wissem-ben-khalifa/sentinelflow/actions/workflows/ci.yml/badge.svg)
 
 </div>
 
@@ -30,123 +31,79 @@ shifts, and corrupted records — that traditional infrastructure monitoring com
 misses. SentinelFlow addresses this by placing an AI-powered observability layer
 directly on top of the data itself.
 
+---
+
 ## Architecture
+Data Sources
+          E-Commerce Batch + Streaming Events
+                         |
+          +--------------+--------------+
+          |                             |
+    Batch Pipeline               Streaming Layer
+    (Apache Airflow)             (Apache Kafka)
+          |                             |
+          +--------------+--------------+
+                         |
+                      Data Lake
+                    (MinIO / S3)
+                         |
+               Profiling Engine
+          completeness, stats, distribution
+                         |
+              Validation Engine
+             business rules, schema
+                         |
+             AI Detection Layer
+        Isolation Forest | Autoencoder
+          Z-Score | IQR | PSI | KS-Test
+                         |
+           Metadata and Lineage Store
+                   (PostgreSQL)
+                         |
+          Alerting and Dashboard Layer
+         FastAPI | Streamlit | Grafana
+---
 
-```text
-┌─────────────────────────────────────────────────────────┐
-│                      Data Sources                       │
-│           E-Commerce (Batch) + Events (Stream)          │
-└───────────────────────┬─────────────────────────────────┘
-                        │
-        ┌───────────────┴───────────────┐
-        ▼                               ▼
-┌───────────────┐               ┌───────────────┐
-│ Batch Pipeline│               │   Streaming   │
-│   (Airflow)   │               │    (Kafka)    │
-└───────┬───────┘               └───────┬───────┘
-        └───────────────┬───────────────┘
-                        ▼
-┌────────────────┐
-│   Data Lake    │
-│  (MinIO / S3)  │
-└───────┬────────┘
-        │
-        ▼
-┌───────────────────────┐
-│   Profiling Engine    │
-│  completeness · stats │
-│  uniqueness · dist    │
-└───────────┬───────────┘
-            │
-            ▼
-┌───────────────────────┐
-│   Validation Engine   │
-│   Great Expectations  │
-└───────────┬───────────┘
-            │
-            ▼
-┌───────────────────────┐
-│   AI Detection Layer  │
-│   Isolation Forest    │
-│   Autoencoder         │
-│   Z-Score · IQR       │
-│   PSI · KS-Test       │
-└───────────┬───────────┘
-            │
-            ▼
-┌───────────────────────┐
-│  Metadata & Lineage   │
-│     (PostgreSQL)      │
-└───────────┬───────────┘
-            │
-            ▼
-┌───────────────────────┐
-│  Alerting & Dashboard │
-│  FastAPI + Streamlit  │
-└───────────────────────┘
+## Features
 
-##  Features
-
-###  Data Quality Monitoring
+### Data Quality Monitoring
 - Detects missing values, duplicates, invalid formats, out-of-range values
-- Schema change detection (new columns, dropped columns, type changes)
-- Freshness monitoring (late data arrivals)
+- Schema change detection — new columns, dropped columns, type changes
+- Freshness monitoring for late data arrivals
+- Business rule validation per dataset
 
-###  AI Anomaly Detection
-- **Isolation Forest** — unsupervised detection of abnormal records
-- **Autoencoder** — deep learning reconstruction error detection
-- **Statistical methods** — Z-Score, IQR, Moving Average
+### AI Anomaly Detection
+- Isolation Forest — unsupervised detection of abnormal records
+- Autoencoder — deep learning reconstruction error detection
+- Z-Score — standard deviation based detection
+- IQR — interquartile range based detection
+- Real-time streaming anomaly detection via Kafka
 
-###  Data Drift Detection
-- **PSI** (Population Stability Index) — distribution shift measurement
-- **KS-Test** (Kolmogorov-Smirnov) — statistical distribution comparison
-- **Jensen-Shannon Divergence** — distribution similarity scoring
+### Data Drift Detection
+- PSI (Population Stability Index) — distribution shift measurement
+- KS-Test (Kolmogorov-Smirnov) — statistical distribution comparison
+- Jensen-Shannon Divergence — distribution similarity scoring
 
-###  Hybrid Pipeline
-- **Batch** — daily ETL via Apache Airflow
-- **Streaming** — real-time event processing via Apache Kafka
+### Hybrid Pipeline
+- Batch — daily ETL via Apache Airflow with two DAGs
+- Streaming — real-time event processing via Apache Kafka
 
-### Metadata & Lineage
+### Data Lake
+- MinIO S3-compatible storage for raw data and model artifacts
+- Organized into raw, processed, and models layers
+
+### Metadata and Lineage
 - Full pipeline traceability from source to dashboard
-- Quality score history per dataset
+- Quality score history per dataset per run
 - Downstream impact visibility
 
-###  Alerting
+### Alerting
 - Email alerts for threshold breaches
-- Slack notifications (optional)
+- Slack webhook notifications
 - Dashboard real-time notifications
+- Alert history with severity levels
 
 ---
-
-sentinelflow/
-├── config/                  # Settings and logging configuration
-├── data/                    # Raw, processed, streaming, sample data
-├── ingestion/
-│   ├── batch/               # Data generation and batch loading
-│   └── streaming/           # Kafka producer and consumer
-├── profiling/               # Data profiling engine
-├── validation/              # Great Expectations validation
-├── detection/
-│   ├── isolation_forest/    # Isolation Forest model
-│   ├── autoencoder/         # Autoencoder model
-│   ├── statistical/         # Z-Score and IQR detection
-│   └── drift/               # PSI, KS-Test, JS Divergence
-├── metadata/                # Metadata tracking and lineage
-├── alerting/                # Email and Slack alerts
-├── api/                     # FastAPI REST API
-├── dashboard/               # Streamlit dashboard
-├── airflow/                 # Airflow DAGs
-├── kafka/                   # Kafka topic configuration
-├── tests/                   # Unit and integration tests
-├── scripts/                 # Setup and utility scripts
-├── docker/                  # Docker configuration files
-├── notebooks/               # Exploratory analysis
-├── .github/workflows/       # CI/CD pipeline
-├── docker-compose.yml       # Full stack orchestration
-├── requirements.txt         # Python dependencies
-└── .env.example             # Environment variable template
----
-
 
 ## Services
 
@@ -154,15 +111,61 @@ sentinelflow/
 |---|---|---|
 | Streamlit Dashboard | http://localhost:8501 | none |
 | Grafana | http://localhost:3000 | admin / sentinelflow123 |
-| FastAPI | http://localhost:8000/docs | none |
-| PostgreSQL | localhost:5433 | sentinelflow_user |
+| FastAPI Docs | http://localhost:8000/docs | none |
+| Airflow | http://localhost:8080 | admin / admin |
+| MinIO Console | http://localhost:9001 | see .env |
+| PostgreSQL | localhost:5433 | see .env |
 | Kafka | localhost:9092 | none |
-| MinIO | http://localhost:9001 | see .env |
-##  Quick Start
+
+---
+
+## Project Structure
+sentinelflow/
+├── config/                        # Settings and logging
+├── data/
+│   ├── raw/                       # Generated raw datasets
+│   ├── processed/                 # Processed datasets
+│   ├── samples/                   # Clean datasets for model training
+│   └── streaming/                 # Streaming data
+├── ingestion/
+│   ├── batch/                     # Data generation and batch loading
+│   └── streaming/                 # Kafka producer and consumer
+├── profiling/                     # Data profiling engine
+├── validation/                    # Business rule validation and schema checking
+├── detection/
+│   ├── isolation_forest/          # Isolation Forest model
+│   ├── autoencoder/               # Autoencoder deep learning model
+│   ├── statistical/               # Z-Score and IQR detection
+│   └── drift/                     # PSI, KS-Test, JS Divergence
+├── storage/                       # MinIO data lake client
+├── metadata/                      # Pipeline metadata and lineage tracking
+├── alerting/                      # Email, Slack, and database alerts
+├── api/                           # FastAPI REST API
+│   └── routes/                    # Quality, anomalies, drift, metadata endpoints
+├── dashboard/
+│   ├── app.py                     # Streamlit main application
+│   └── components/                # Overview, quality, anomalies, drift pages
+├── airflow/
+│   └── dags/                      # Batch pipeline and quality check DAGs
+├── kafka_config/                  # Kafka topic configuration
+├── models/                        # Trained model artifacts (gitignored)
+├── tests/
+│   ├── unit/                      # 32 unit tests
+│   └── integration/               # Integration tests
+├── scripts/                       # Setup, seed, and pipeline runner
+├── docker/                        # Dockerfiles and Grafana provisioning
+├── .github/workflows/             # CI/CD pipeline
+├── docker-compose.yml             # Full stack orchestration
+├── requirements.txt               # Python dependencies
+└── .env.example                   # Environment variable template
+
+---
+
+## Quick Start
 
 ### Prerequisites
 - Docker Desktop
-- Python 3.11+
+- Python 3.11
 - Git
 
 ### 1. Clone the repository
@@ -180,28 +183,33 @@ cp .env.example .env
 ### 3. Create virtual environment
 ```bash
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+venv\Scripts\activate        # Windows
+source venv/bin/activate     # Mac/Linux
 pip install -r requirements.txt
 ```
 
 ### 4. Start all services
 ```bash
-docker-compose up -d
+# First time only
+docker-compose up airflow-init
+
+# Every time
+docker-compose up -d postgres kafka minio grafana airflow-webserver airflow-scheduler
 ```
 
 ### 5. Initialize the database
 ```bash
-python scripts/setup_db.py
+python -m scripts.setup_db
 ```
 
-### 6. Generate sample data
+### 6. Seed initial data
 ```bash
-python scripts/seed_data.py
+python -m scripts.seed_data
 ```
 
-### 7. Run the pipeline
+### 7. Run the full pipeline
 ```bash
-python scripts/run_pipeline.py
+python -m scripts.run_pipeline
 ```
 
 ### 8. Launch the dashboard
@@ -216,56 +224,75 @@ uvicorn api.main:app --reload
 
 ---
 
-##  Tech Stack
+## API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | /quality/profiling/{dataset} | Profiling results per column |
+| GET | /quality/validation/{dataset} | Validation results |
+| GET | /quality/summary | Quality summary all datasets |
+| GET | /anomalies/{dataset} | Anomaly detection results |
+| GET | /anomalies/summary/all | Anomaly summary all methods |
+| GET | /drift/{dataset} | Drift detection results |
+| GET | /drift/summary/all | Drift summary all datasets |
+| GET | /metadata/health | Platform health score |
+| GET | /metadata/pipelines | Pipeline run history |
+| GET | /metadata/lineage/{pipeline_id} | Full lineage chain |
+| GET | /metadata/alerts | Active alerts |
+| GET | /health | API health check |
+
+---
+
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
-| Batch Orchestration | Apache Airflow |
-| Streaming | Apache Kafka |
+| Batch Orchestration | Apache Airflow 2.8 |
+| Streaming | Apache Kafka 3.6 (KRaft mode) |
 | Data Lake | MinIO (S3-compatible) |
-| Data Validation | Great Expectations |
+| Data Validation | Custom validation engine |
 | Anomaly Detection | Scikit-learn, TensorFlow |
 | Drift Detection | SciPy, NumPy |
-| Storage | PostgreSQL |
+| Storage | PostgreSQL 15 |
 | API | FastAPI |
 | Dashboard | Streamlit + Plotly |
+| Monitoring | Grafana 10.2 |
 | Containerization | Docker + Docker Compose |
+| CI/CD | GitHub Actions |
 | Language | Python 3.11 |
 
 ---
 
-##  Dashboard Pages
-
-| Page | Description |
-|---|---|
-| Overview | Pipeline health score, quality score, anomaly count, drift status |
-| Data Quality | Missing values, duplicates, schema violations per dataset |
-| Anomalies | Isolation Forest results, Autoencoder results, historical trends |
-| Drift | PSI scores, KS-Test results, distribution comparisons |
-
----
-
-##  Running Tests
+## Running Tests
 
 ```bash
-# All tests
-pytest
+# Unit tests
+pytest tests/unit/ -v
 
-# With coverage report
-pytest --cov=. --cov-report=html
+# With coverage
+pytest tests/unit/ --cov=profiling --cov=validation --cov=detection -v
 
-# Specific module
-pytest tests/unit/test_profiler.py -v
+# Integration tests (requires running services)
+pytest tests/integration/ -v
 ```
 
 ---
 
-##  License
+## Airflow DAGs
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+| DAG | Schedule | Description |
+|---|---|---|
+| sentinelflow_batch_pipeline | Daily at midnight | Full pipeline: generation, profiling, validation, anomaly detection, drift, alerts |
+| sentinelflow_quality_check | Every hour | Lightweight: profiling, validation, alerts |
+
+---
+
+## License
+
+MIT License. See LICENSE for details.
 
 ---
 
 <div align="center">
-Built with precision by [Your Name] · Data Engineering Portfolio Project
+Built by [Your Name] — Data Engineering Portfolio Project
 </div>

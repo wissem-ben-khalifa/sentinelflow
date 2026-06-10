@@ -7,14 +7,6 @@ __pycache__/
 *.egg-info/
 dist/
 build/
-eggs/
-parts/
-var/
-sdist/
-wheels/
-*.egg-info/
-.installed.cfg
-MANIFEST
 
 # Virtual Environment
 venv/
@@ -22,7 +14,7 @@ env/
 ENV/
 .venv/
 
-# Environment Variables 
+# Environment Variables
 .env
 
 # Jupyter Notebooks
@@ -37,13 +29,13 @@ ENV/
 .pytest_cache/
 .coverage
 htmlcov/
-.tox/
+coverage.xml
 
 # Logs
 logs/
 *.log
 
-# Data files (too large for git)
+# Data files
 data/raw/*
 data/processed/*
 data/streaming/*
@@ -56,15 +48,17 @@ data/streaming/*
 *.db
 *.sqlite3
 
-# Docker
+# Docker volumes
 docker/postgres-data/
 docker/minio-data/
+docker/grafana/
 
-# ML Models (too large for git)
+# ML Models
 *.pkl
 *.h5
 *.pt
 *.pth
+*.keras
 models/
 
 # Great Expectations
@@ -77,3 +71,10 @@ desktop.ini
 
 # MinIO
 .minio/
+
+# Airflow
+airflow/logs/
+
+# Coverage
+coverage.xml
+.coverage
