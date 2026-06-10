@@ -158,3 +158,22 @@ services:
       - .:/app
     networks:
       - sentinelflow-network
+  
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: sentinelflow-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: sentinelflow123
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning
+    networks:
+      - sentinelflow-network
+    depends_on:
+      postgres:
+        condition: service_healthy

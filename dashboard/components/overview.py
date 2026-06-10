@@ -91,6 +91,7 @@ def render():
 
     health_score = get_pipeline_health_score()
     quality_df = get_quality_summary()
+    st.write(quality_df)
     alerts_df = get_recent_alerts()
 
     col1, col2, col3, col4 = st.columns(4)

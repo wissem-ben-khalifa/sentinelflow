@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: SentinelFlow
+    orgId: 1
+    folder: SentinelFlow
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboard_files

@@ -1,0 +1,257 @@
+{
+  "__inputs": [],
+  "__requires": [],
+  "annotations": {"list": []},
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "SentinelFlow-PostgreSQL",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "red", "value": null},
+              {"color": "yellow", "value": 60},
+              {"color": "green", "value": 80}
+            ]
+          }
+        }
+      },
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+      "id": 1,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        }
+      },
+      "title": "Avg Quality Score",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": "SentinelFlow-PostgreSQL",
+          "rawSql": "SELECT NOW() as time, ROUND(AVG(quality_score)::numeric, 2) as value FROM pipeline_metadata WHERE run_date > NOW() - INTERVAL '1 day'",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": "SentinelFlow-PostgreSQL",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 100},
+              {"color": "red", "value": 300}
+            ]
+          }
+        }
+      },
+      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+      "id": 2,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        }
+      },
+      "title": "Total Anomalies Today",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": "SentinelFlow-PostgreSQL",
+          "rawSql": "SELECT NOW() as time, COUNT(*) as value FROM anomaly_results WHERE is_anomaly = TRUE AND run_date > NOW() - INTERVAL '1 day'",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": "SentinelFlow-PostgreSQL",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "red", "value": 1}
+            ]
+          }
+        }
+      },
+      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+      "id": 3,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        }
+      },
+      "title": "Active Critical Alerts",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": "SentinelFlow-PostgreSQL",
+          "rawSql": "SELECT NOW() as time, COUNT(*) as value FROM alerts WHERE severity = 'critical' AND resolved = FALSE",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": "SentinelFlow-PostgreSQL",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "red", "value": 1}
+            ]
+          }
+        }
+      },
+      "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0},
+      "id": 4,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        }
+      },
+      "title": "Datasets with Drift",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": "SentinelFlow-PostgreSQL",
+          "rawSql": "SELECT NOW() as time, COUNT(DISTINCT dataset_name) as value FROM drift_results WHERE drift_detected = TRUE AND run_date > NOW() - INTERVAL '1 day'",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": "SentinelFlow-PostgreSQL",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10
+          },
+          "color": {"mode": "palette-classic"}
+        }
+      },
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4},
+      "id": 5,
+      "options": {
+        "tooltip": {"mode": "multi"},
+        "legend": {"displayMode": "list", "placement": "bottom"}
+      },
+      "title": "Quality Score Over Time by Dataset",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": "SentinelFlow-PostgreSQL",
+          "rawSql": "SELECT run_date AS \"time\", quality_score AS \"value\", dataset_name AS metric FROM pipeline_metadata WHERE $__timeFilter(run_date) ORDER BY run_date",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": "SentinelFlow-PostgreSQL",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10
+          },
+          "color": {"mode": "palette-classic"}
+        }
+      },
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4},
+      "id": 6,
+      "options": {
+        "tooltip": {"mode": "multi"},
+        "legend": {"displayMode": "list", "placement": "bottom"}
+      },
+      "title": "Anomaly Count Over Time by Dataset",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": "SentinelFlow-PostgreSQL",
+          "rawSql": "SELECT run_date AS \"time\", anomaly_count AS \"value\", dataset_name AS metric FROM pipeline_metadata WHERE $__timeFilter(run_date) ORDER BY run_date",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": "SentinelFlow-PostgreSQL",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "displayMode": "color-background"
+          }
+        }
+      },
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 12},
+      "id": 7,
+      "options": {
+        "showHeader": true,
+        "footer": {"show": false}
+      },
+      "title": "Recent Alerts",
+      "type": "table",
+      "targets": [
+        {
+          "datasource": "SentinelFlow-PostgreSQL",
+          "rawSql": "SELECT triggered_at, alert_type, dataset_name, severity, message FROM alerts ORDER BY triggered_at DESC LIMIT 20",
+          "format": "table",
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "tags": ["sentinelflow"],
+  "time": {"from": "now-7d", "to": "now"},
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "SentinelFlow Observability",
+  "uid": "sentinelflow-main",
+  "version": 1
+}

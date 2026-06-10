@@ -73,6 +73,7 @@ with st.sidebar:
     st.markdown("---")
     st.caption("SentinelFlow v1.0.0")
 
+st.write(f"Loading page: {selection}")
 page = PAGES[selection]
 try:
     page.render()
