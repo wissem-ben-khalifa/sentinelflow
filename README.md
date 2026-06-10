@@ -32,40 +32,54 @@ misses. SentinelFlow addresses this by placing an AI-powered observability layer
 directly on top of the data itself.
 
 ---
-
 ## Architecture
+```mermaid
+flowchart TD
+    A[Data Sources\nE-Commerce Batch + Streaming Events] --> B[Batch Pipeline\nApache Airflow]
+    A --> C[Streaming Layer\nApache Kafka]
 
-```
-                    Data Sources
-          E-Commerce Batch + Streaming Events
-                         |
-          +--------------+--------------+
-          |                             |
-    Batch Pipeline               Streaming Layer
-    (Apache Airflow)             (Apache Kafka)
-          |                             |
-          +--------------+--------------+
-                         |
-                      Data Lake
-                    (MinIO / S3)
-                         |
-               Profiling Engine
-          completeness, stats, distribution
-                         |
-              Validation Engine
-             business rules, schema
-                         |
-             AI Detection Layer
-        Isolation Forest | Autoencoder
-          Z-Score | IQR | PSI | KS-Test
-                         |
-           Metadata and Lineage Store
-                   (PostgreSQL)
-                         |
-          Alerting and Dashboard Layer
-         FastAPI | Streamlit | Grafana
-```
+    B --> D[Data Lake\nMinIO / S3]
+    C --> D
 
+    D --> E[Profiling Engine\ncompleteness · stats · distribution]
+
+    E --> F[Validation Engine\nbusiness rules · schema checks]
+
+    F --> G[AI Detection Layer]
+
+    G --> G1[Isolation Forest]
+    G --> G2[Autoencoder]
+    G --> G3[Z-Score · IQR]
+    G --> G4[PSI · KS-Test · JS Divergence]
+
+    G1 --> H[Metadata and Lineage Store\nPostgreSQL]
+    G2 --> H
+    G3 --> H
+    G4 --> H
+
+    H --> I[Alerting and Dashboard Layer]
+
+    I --> I1[FastAPI]
+    I --> I2[Streamlit]
+    I --> I3[Grafana]
+
+    style A fill:#1e1e2e,color:#cdd6f4,stroke:#89b4fa
+    style B fill:#1e1e2e,color:#cdd6f4,stroke:#89dceb
+    style C fill:#1e1e2e,color:#cdd6f4,stroke:#89dceb
+    style D fill:#1e1e2e,color:#cdd6f4,stroke:#a6e3a1
+    style E fill:#1e1e2e,color:#cdd6f4,stroke:#cba6f7
+    style F fill:#1e1e2e,color:#cdd6f4,stroke:#cba6f7
+    style G fill:#1e1e2e,color:#cdd6f4,stroke:#f38ba8
+    style G1 fill:#1e1e2e,color:#cdd6f4,stroke:#f38ba8
+    style G2 fill:#1e1e2e,color:#cdd6f4,stroke:#f38ba8
+    style G3 fill:#1e1e2e,color:#cdd6f4,stroke:#f38ba8
+    style G4 fill:#1e1e2e,color:#cdd6f4,stroke:#f38ba8
+    style H fill:#1e1e2e,color:#cdd6f4,stroke:#fab387
+    style I fill:#1e1e2e,color:#cdd6f4,stroke:#a6e3a1
+    style I1 fill:#1e1e2e,color:#cdd6f4,stroke:#a6e3a1
+    style I2 fill:#1e1e2e,color:#cdd6f4,stroke:#a6e3a1
+    style I3 fill:#1e1e2e,color:#cdd6f4,stroke:#a6e3a1
+```
 ## Features
 
 ### Data Quality Monitoring
@@ -296,53 +310,7 @@ pytest tests/integration/ -v
 MIT License. See LICENSE for details.
 
 ---
-```mermaid
-flowchart TD
-    A[Data Sources\nE-Commerce Batch + Streaming Events] --> B[Batch Pipeline\nApache Airflow]
-    A --> C[Streaming Layer\nApache Kafka]
 
-    B --> D[Data Lake\nMinIO / S3]
-    C --> D
-
-    D --> E[Profiling Engine\ncompleteness · stats · distribution]
-
-    E --> F[Validation Engine\nbusiness rules · schema checks]
-
-    F --> G[AI Detection Layer]
-
-    G --> G1[Isolation Forest]
-    G --> G2[Autoencoder]
-    G --> G3[Z-Score · IQR]
-    G --> G4[PSI · KS-Test · JS Divergence]
-
-    G1 --> H[Metadata and Lineage Store\nPostgreSQL]
-    G2 --> H
-    G3 --> H
-    G4 --> H
-
-    H --> I[Alerting and Dashboard Layer]
-
-    I --> I1[FastAPI]
-    I --> I2[Streamlit]
-    I --> I3[Grafana]
-
-    style A fill:#1e1e2e,color:#cdd6f4,stroke:#89b4fa
-    style B fill:#1e1e2e,color:#cdd6f4,stroke:#89dceb
-    style C fill:#1e1e2e,color:#cdd6f4,stroke:#89dceb
-    style D fill:#1e1e2e,color:#cdd6f4,stroke:#a6e3a1
-    style E fill:#1e1e2e,color:#cdd6f4,stroke:#cba6f7
-    style F fill:#1e1e2e,color:#cdd6f4,stroke:#cba6f7
-    style G fill:#1e1e2e,color:#cdd6f4,stroke:#f38ba8
-    style G1 fill:#1e1e2e,color:#cdd6f4,stroke:#f38ba8
-    style G2 fill:#1e1e2e,color:#cdd6f4,stroke:#f38ba8
-    style G3 fill:#1e1e2e,color:#cdd6f4,stroke:#f38ba8
-    style G4 fill:#1e1e2e,color:#cdd6f4,stroke:#f38ba8
-    style H fill:#1e1e2e,color:#cdd6f4,stroke:#fab387
-    style I fill:#1e1e2e,color:#cdd6f4,stroke:#a6e3a1
-    style I1 fill:#1e1e2e,color:#cdd6f4,stroke:#a6e3a1
-    style I2 fill:#1e1e2e,color:#cdd6f4,stroke:#a6e3a1
-    style I3 fill:#1e1e2e,color:#cdd6f4,stroke:#a6e3a1
-```
 
 <div align="center">
 Built by wissem ben khalifa — Data Engineering Portfolio Project
