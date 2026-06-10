@@ -28,6 +28,8 @@ from detection.drift.runner import run_drift_detection
 from metadata.tracker import record_pipeline_run
 from metadata.lineage import record_full_pipeline_lineage
 from alerting.alert_manager import run_all_checks
+from storage.minio_client import upload_dataset, upload_model
+from pathlib import Path
 
 logger = get_logger(__name__)
 
@@ -195,11 +197,20 @@ def run_full_pipeline(
             dataset_name=dataset_name,
             source_file=f"data/raw/{dataset_name}.csv"
         )
+        report["datasets"][dataset_name] = dataset_report
+        logger.info(f"Dataset {dataset_name} complete — quality={quality_score}")
+
+        #step 8-upload to minio
+        upload_dataset(dataset_name, RAW_DATA_DIR / f"{dataset_name}.csv")
+        model_dir = Path("models/isolation_forest")
+        model_file = model_dir / f"{dataset_name}_model.pkl"
+        if model_file.exists():
+            upload_model(f"isolation_forest_{dataset_name}", model_file)
 
         report["datasets"][dataset_name] = dataset_report
         logger.info(f"Dataset {dataset_name} complete — quality={quality_score}")
 
-    # Step 8 - Alert Checks
+    # Step 9 - Alert Checks
     logger.info("Running alert checks across all datasets")
     alert_totals = {}
     for dataset_name in DATASETS:

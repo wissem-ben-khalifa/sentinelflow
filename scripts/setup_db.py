@@ -28,6 +28,17 @@ def get_connection():
         password=POSTGRES_PASSWORD
     )
 
+def setup_minio():
+    """Initialize MinIO bucket for the data lake."""
+    try:
+        from storage.minio_client import get_client, ensure_bucket_exists
+        from config.settings import MINIO_BUCKET_NAME
+        client = get_client()
+        ensure_bucket_exists(client, MINIO_BUCKET_NAME)
+        logger.info("MinIO bucket initialized successfully")
+    except Exception as e:
+        logger.warning(f"MinIO setup skipped: {e}")
+
 
 def create_tables(conn):
     """Create all SentinelFlow tables."""
@@ -200,6 +211,7 @@ def main():
 
     create_tables(conn)
     verify_tables(conn)
+    setup_minio()
 
     conn.close()
     logger.info("Database setup complete")

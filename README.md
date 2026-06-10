@@ -14,6 +14,7 @@
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.31-FF4B4B?style=flat-square&logo=streamlit)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
+![CI](https://github.com/wissem-ben-khalifa/sentinelflow/actions/workflows/ci.yml/badge.svg)
 
 </div>
 
@@ -146,6 +147,17 @@ sentinelflow/
 └── .env.example             # Environment variable template
 ---
 
+
+## Services
+
+| Service | URL | Credentials |
+|---|---|---|
+| Streamlit Dashboard | http://localhost:8501 | none |
+| Grafana | http://localhost:3000 | admin / sentinelflow123 |
+| FastAPI | http://localhost:8000/docs | none |
+| PostgreSQL | localhost:5433 | sentinelflow_user |
+| Kafka | localhost:9092 | none |
+| MinIO | http://localhost:9001 | see .env |
 ##  Quick Start
 
 ### Prerequisites
