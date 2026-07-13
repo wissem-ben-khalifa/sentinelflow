@@ -307,7 +307,7 @@ pytest tests/integration/ -v
 
 ## License
 
-MIT License. See LICENSE for details.
+MIT License. See  LICENSE for the  details.
 
 ---
 
